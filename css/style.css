@@ -1214,324 +1214,202 @@ body::after {
 }
 
 /* ===================================================
-   BIM Insight - KPI, Member & Version Cards (v2.4 Redesign)
+   BIM Insight - Cards & Accent Colors Styling (v2.4 Redesign)
    =================================================== */
 
-/* --- KPI Cards (Summary Cards Redesign) --- */
-.kpi-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-base);
+/* --- KPI Summary Cards (淡い背景色と極薄の枠線) --- */
+.summary-card {
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-width: 1px !important;
+  transition: all var(--transition-base) !important;
 }
 
-.kpi-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-border-hover);
+.summary-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
-.kpi-icon-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
+/* 各サマリーカードの個別配色 */
+.summary-card.today {
+  background-color: rgba(99, 102, 241, 0.035) !important;
+  border-color: rgba(99, 102, 241, 0.08) !important;
 }
 
-.kpi-info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.summary-card.week {
+  background-color: rgba(34, 197, 94, 0.035) !important;
+  border-color: rgba(34, 197, 94, 0.08) !important;
 }
 
-.kpi-value {
-  font-size: var(--text-2xl);
-  font-weight: 800;
-  color: var(--color-text-primary);
-  line-height: 1.2;
+.summary-card.month {
+  background-color: rgba(234, 179, 8, 0.035) !important;
+  border-color: rgba(234, 179, 8, 0.08) !important;
 }
 
-.kpi-value .unit {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  margin-left: var(--space-1);
+.summary-card.avg {
+  background-color: rgba(236, 72, 153, 0.035) !important;
+  border-color: rgba(236, 72, 153, 0.08) !important;
 }
 
-.kpi-label {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  font-weight: 500;
+.summary-card.users {
+  background-color: rgba(6, 182, 212, 0.035) !important;
+  border-color: rgba(6, 182, 212, 0.08) !important;
 }
 
-/* Colors for KPI cards */
-.blue-kpi .kpi-icon-circle {
-  background-color: rgba(108, 140, 255, 0.08);
-  color: #3b82f6;
-  border: 1px solid rgba(108, 140, 255, 0.15);
-}
-
-.green-kpi .kpi-icon-circle {
-  background-color: rgba(34, 197, 94, 0.08);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.15);
-}
-
-.orange-kpi .kpi-icon-circle {
-  background-color: rgba(249, 115, 22, 0.08);
-  color: #ea580c;
-  border: 1px solid rgba(249, 115, 22, 0.15);
+.summary-card.licenses {
+  background-color: rgba(139, 92, 246, 0.035) !important;
+  border-color: rgba(139, 92, 246, 0.08) !important;
 }
 
 
-/* --- Dashboard Card Section Wrap --- */
-.dashboard-section-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: var(--space-6);
+/* --- Member Cards Styling (横長レイアウト維持 + 配色) --- */
+.member-card {
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-width: 1px !important;
+  transition: all var(--transition-base) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--space-2) !important;
 }
 
-
-/* --- Member Cards Item Redesign --- */
-.member-card-item {
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  transition: all var(--transition-base);
+.member-card:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .member-avatar-circle {
-  width: 36px;
-  height: 36px;
   border-radius: var(--radius-full);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: var(--text-sm);
   color: #ffffff;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-.member-meta {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.member-card-item .member-name {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.member-card-item .member-card-value {
-  font-size: var(--text-2xl);
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin-top: var(--space-1);
-}
-
-.member-card-item .member-progress {
+.member-progress {
   height: 6px;
   background: rgba(0, 0, 0, 0.04);
   border-radius: var(--radius-full);
   overflow: hidden;
+  margin-top: var(--space-2);
 }
 
-.member-card-item .member-progress-bar {
+.member-progress-bar {
   height: 100%;
   border-radius: var(--radius-full);
 }
 
 /* Purple Theme for Members */
-.purple-theme {
-  background-color: rgba(139, 92, 246, 0.03);
-  border: 1.5px solid rgba(139, 92, 246, 0.12);
+.member-card.purple-theme {
+  background-color: rgba(139, 92, 246, 0.025) !important;
+  border-color: rgba(139, 92, 246, 0.08) !important;
 }
-.purple-theme .member-avatar-circle {
+.member-card.purple-theme .member-avatar-circle {
   background: linear-gradient(135deg, #a78bfa, #8b5cf6);
 }
-.purple-theme .member-progress-bar {
+.member-card.purple-theme .member-progress-bar {
   background: #8b5cf6;
 }
-.purple-theme .member-status {
+.member-card.purple-theme .member-status {
   color: #8b5cf6;
   font-size: var(--text-xs);
   font-weight: 600;
 }
 
 /* Blue Theme for Members */
-.blue-theme {
-  background-color: rgba(59, 130, 246, 0.03);
-  border: 1.5px solid rgba(59, 130, 246, 0.12);
+.member-card.blue-theme {
+  background-color: rgba(59, 130, 246, 0.025) !important;
+  border-color: rgba(59, 130, 246, 0.08) !important;
 }
-.blue-theme .member-avatar-circle {
+.member-card.blue-theme .member-avatar-circle {
   background: linear-gradient(135deg, #60a5fa, #3b82f6);
 }
-.blue-theme .member-progress-bar {
+.member-card.blue-theme .member-progress-bar {
   background: #3b82f6;
 }
-.blue-theme .member-status {
+.member-card.blue-theme .member-status {
   color: #3b82f6;
   font-size: var(--text-xs);
   font-weight: 600;
 }
 
 
-/* --- Version Cards Redesign --- */
-.version-card {
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  position: relative;
-  transition: all var(--transition-base);
+/* --- Archicad Version Cards (淡い背景色と極薄の枠線) --- */
+.version-card-item {
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-width: 1px !important;
+  transition: all var(--transition-base) !important;
 }
 
-.version-card-main {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.version-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  line-height: 1.1;
-  flex-shrink: 0;
-}
-
-.version-badge-sub {
-  font-size: 8px;
-  text-transform: uppercase;
-  opacity: 0.8;
-  font-weight: 600;
-}
-
-.version-badge-main {
-  font-size: 1.05rem;
-}
-
-.version-meta {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.version-name {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.version-time {
-  font-size: var(--text-base);
-  font-weight: 800;
-  color: var(--color-text-primary);
-}
-
-.version-card-today-badge {
-  font-size: 9px;
-  color: var(--color-text-muted);
-  font-weight: 600;
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-4);
-}
-
-.version-card-footer {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  padding-top: var(--space-2);
+.version-card-item:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 /* Version Themes (淡い 10% 程度の背景色) */
-.version-card.v27 {
-  background-color: rgba(239, 68, 68, 0.05);
-  border: 1.5px solid rgba(239, 68, 68, 0.12);
+.version-card-item.v27 {
+  background-color: rgba(239, 68, 68, 0.035) !important;
+  border-color: rgba(239, 68, 68, 0.08) !important;
 }
-.version-card.v27 .version-badge {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-}
-
-.version-card.v28 {
-  background-color: rgba(249, 115, 22, 0.05);
-  border: 1.5px solid rgba(249, 115, 22, 0.12);
-}
-.version-card.v28 .version-badge {
-  background: rgba(249, 115, 22, 0.12);
-  color: #f97316;
+.version-card-item.v27 .summary-card-icon {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
 }
 
-.version-card.v29 {
-  background-color: rgba(34, 197, 94, 0.05);
-  border: 1.5px solid rgba(34, 197, 94, 0.12);
+.version-card-item.v28 {
+  background-color: rgba(249, 115, 22, 0.035) !important;
+  border-color: rgba(249, 115, 22, 0.08) !important;
 }
-.version-card.v29 .version-badge {
-  background: rgba(34, 197, 94, 0.12);
-  color: #22c55e;
-}
-
-.version-card.vother {
-  background-color: rgba(100, 116, 139, 0.05);
-  border: 1.5px solid rgba(100, 116, 139, 0.12);
-}
-.version-card.vother .version-badge {
-  background: rgba(100, 116, 139, 0.12);
-  color: #64748b;
+.version-card-item.v28 .summary-card-icon {
+  background-color: rgba(249, 115, 22, 0.12) !important;
+  color: #f97316 !important;
 }
 
+.version-card-item.v29 {
+  background-color: rgba(34, 197, 94, 0.035) !important;
+  border-color: rgba(34, 197, 94, 0.08) !important;
+}
+.version-card-item.v29 .summary-card-icon {
+  background-color: rgba(34, 197, 94, 0.12) !important;
+  color: #22c55e !important;
+}
 
-/* --- Override Grid Layout --- */
+.version-card-item.vother {
+  background-color: rgba(100, 116, 139, 0.035) !important;
+  border-color: rgba(100, 116, 139, 0.08) !important;
+}
+.version-card-item.vother .summary-card-icon {
+  background-color: rgba(100, 116, 139, 0.12) !important;
+  color: #64748b !important;
+}
+
+
+/* --- Bottom Grid Layout (White Cards with soft border and shadow) --- */
 .ranking-card, .weekly-detail-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-base);
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 12px !important;
+  padding: var(--space-6) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
 }
 
 .ranking-card:hover, .weekly-detail-card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-hover) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .ranking-card-header, .weekly-detail-header {
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border) !important;
+  padding-bottom: var(--space-3) !important;
+  margin-bottom: var(--space-4) !important;
 }
 
 .ranking-card-title, .weekly-detail-title {
-  font-size: var(--text-base);
+  font-size: var(--text-base) !important;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary) !important;
 }
