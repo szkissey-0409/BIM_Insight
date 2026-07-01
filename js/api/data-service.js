@@ -299,9 +299,6 @@ class DataService {
       }));
   }
 
-  /**
-   * 今日の最大同時利用人数を計算する
-   */
   async getTodayMaxConcurrentUsers() {
     const logs = await this.fetchLogs();
     const todayStr = this.getJstDateStr(new Date());
@@ -316,15 +313,54 @@ class DataService {
       const logDateStr = this.getJstDateStr(parsedDate);
       if (logDateStr === todayStr) {
         todayLogs.push({
+          user: log.user_name || '',
+          machine: log.machine_name || '',
           start: parsedDate,
           end: new Date(parsedDate.getTime() + (log.duration_seconds || 0) * 1000)
         });
       }
     }
+
+    // 同一ユーザーかつ同一マシンごとにログをグループ化
+    const groups = {};
+    todayLogs.forEach(log => {
+      const key = `${log.user}_${log.machine}`;
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(log);
+    });
+
+    const mergedLogs = [];
+    const MERGE_THRESHOLD_MS = 10000; // 10秒以内の隙間や重複はマージ
+
+    Object.values(groups).forEach(groupLogs => {
+      // 開始時刻順にソート
+      groupLogs.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+      let current = null;
+      groupLogs.forEach(log => {
+        if (!current) {
+          current = { ...log };
+        } else {
+          // 直前のログの終了時刻＋閾値と、今回の開始時刻を比較
+          if (log.start.getTime() <= current.end.getTime() + MERGE_THRESHOLD_MS) {
+            // 時間範囲を拡張してマージ
+            current.end = new Date(Math.max(current.end.getTime(), log.end.getTime()));
+          } else {
+            mergedLogs.push(current);
+            current = { ...log };
+          }
+        }
+      });
+      if (current) {
+        mergedLogs.push(current);
+      }
+    });
     
     // イベントを作成する
     const events = [];
-    todayLogs.forEach(log => {
+    mergedLogs.forEach(log => {
       events.push({ time: log.start.getTime(), type: 1 });
       events.push({ time: log.end.getTime(), type: -1 });
     });
