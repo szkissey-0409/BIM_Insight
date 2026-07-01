@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BIM Insight - BIM推進部のArchicad利用時間を見える化するダッシュボード">
+  <title>BIM Insight | Archicad利用時間ダッシュボード</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="app-layout">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">📐</div>
+          <div class="sidebar-logo-text">
+            <span class="sidebar-logo-title">BIM Insight</span>
+            <span class="sidebar-logo-subtitle">Dashboard v1.0</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-label">メイン</div>
+        <a href="#" class="sidebar-nav-item active" id="nav-dashboard">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <a href="#" class="sidebar-nav-item" id="nav-members">
+          <span class="nav-icon">👥</span>
+          メンバー一覧
+        </a>
+        <a href="#" class="sidebar-nav-item" id="nav-ranking">
+          <span class="nav-icon">🏆</span>
+          ランキング
+        </a>
+
+        <div class="sidebar-nav-label">分析</div>
+        <a href="#" class="sidebar-nav-item" id="nav-daily">
+          <span class="nav-icon">📅</span>
+          日別レポート
+        </a>
+        <a href="#" class="sidebar-nav-item" id="nav-weekly">
+          <span class="nav-icon">📈</span>
+          週間レポート
+        </a>
+        <a href="#" class="sidebar-nav-item" id="nav-monthly">
+          <span class="nav-icon">📋</span>
+          月間レポート
+        </a>
+
+        <div class="sidebar-nav-label">設定</div>
+        <a href="#" class="sidebar-nav-item" id="nav-settings">
+          <span class="nav-icon">⚙️</span>
+          設定
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebar-user" style="display: none;">
+          <div class="user-avatar" id="user-avatar">👤</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">ユーザー名</div>
+            <div class="user-dept" id="user-dept">所属部署</div>
+          </div>
+        </div>
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <span>オンライン</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Main Content ===== -->
+    <main class="main-content">
+
+      <!-- Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <h1 class="header-title">ダッシュボード</h1>
+          <span class="header-date" id="header-date">--</span>
+        </div>
+        <div class="header-right">
+          <button class="header-btn" title="更新">🔄</button>
+          <button class="header-btn" title="通知">🔔</button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+
+        <!-- ===== Dashboard View ===== -->
+        <div id="view-dashboard" class="view-section">
+          <!-- Summary Cards -->
+          <div class="summary-grid" id="summary-grid">
+            <!-- JS で描画 -->
+          </div>
+
+          <!-- Today Member Cards -->
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">👤</span>
+                今日のメンバー別利用時間
+              </h2>
+            </div>
+            <div class="member-grid" id="today-member-grid">
+              <!-- JS で描画 -->
+            </div>
+          </div>
+
+          <!-- Bottom Section: Ranking & Weekly -->
+          <div class="section" id="bottom-section">
+            <!-- JS で描画 -->
+          </div>
+        </div>
+
+        <!-- ===== Members View ===== -->
+        <div id="view-members" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">👥</span>
+                メンバー一覧
+              </h2>
+            </div>
+            <div class="member-grid" id="all-members-grid">
+              <!-- JS で描画 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Ranking View ===== -->
+        <div id="view-ranking" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">🏆</span>
+                利用時間ランキング（詳細）
+              </h2>
+            </div>
+            <div class="ranking-card" style="margin-top: var(--space-4);">
+              <div class="ranking-list" id="detail-ranking-list">
+                <!-- JS で描画 -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Daily Report View ===== -->
+        <div id="view-daily" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">📅</span>
+                日別レポート（直近7日間）
+              </h2>
+            </div>
+            <div class="weekly-detail-card" style="margin-top: var(--space-4);">
+              <div class="weekly-detail-header">
+                <div class="weekly-detail-title">📅 日別合計利用時間</div>
+              </div>
+              <div class="ranking-list" id="daily-report-list" style="padding: var(--space-4);">
+                <!-- JS で描画 -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Weekly Report View ===== -->
+        <div id="view-weekly" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">📈</span>
+                週間レポート（詳細）
+              </h2>
+            </div>
+            <div class="weekly-detail-card" style="margin-top: var(--space-4);">
+              <div class="weekly-detail-header">
+                <div class="weekly-detail-title">📋 今週のメンバー別日別詳細</div>
+              </div>
+              <table class="weekly-table">
+                <thead>
+                  <tr>
+                    <th>メンバー</th>
+                    <th>月</th>
+                    <th>火</th>
+                    <th>水</th>
+                    <th>木</th>
+                    <th>金</th>
+                    <th>合計</th>
+                  </tr>
+                </thead>
+                <tbody id="detail-weekly-rows">
+                  <!-- JS で描画 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Monthly Report View ===== -->
+        <div id="view-monthly" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">📋</span>
+                月間レポート（詳細）
+              </h2>
+            </div>
+            <div class="ranking-card" style="margin-top: var(--space-4);">
+              <div class="ranking-list" id="monthly-report-list">
+                <!-- JS で描画 -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Settings View ===== -->
+        <div id="view-settings" class="view-section" style="display: none;">
+          <div class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="icon">⚙️</span>
+                設定
+              </h2>
+            </div>
+            <div class="weekly-detail-card"
+              style="margin-top: var(--space-4); max-width: 500px; padding: var(--space-6);">
+              <form id="settings-form" class="modal-form"
+                style="background: transparent; border: none; padding: 0; box-shadow: none; width: 100%;">
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                  <label for="settings-fullname"
+                    style="color: var(--color-text-secondary); margin-bottom: var(--space-2); display: block;">フルネーム</label>
+                  <input type="text" id="settings-fullname" required placeholder="例：鈴木 一生"
+                    style="background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border); width: 100%; box-sizing: border-box;">
+                </div>
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                  <label for="settings-department"
+                    style="color: var(--color-text-secondary); margin-bottom: var(--space-2); display: block;">所属</label>
+                  <select id="settings-department" required
+                    style="background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border); width: 100%; box-sizing: border-box;">
+                    <option value="" disabled>所属を選択してください</option>
+                    <option value="本社BIM推進部">本社BIM推進部</option>
+                    <option value="東京支店">東京支店</option>
+                    <option value="大阪支店">大阪支店</option>
+                    <option value="名古屋支店">名古屋支店</option>
+                    <option value="北陸支店">北陸支店</option>
+                    <option value="東北支店">東北支店</option>
+                    <option value="九州支店">九州支店</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                  <label for="settings-licenses"
+                    style="color: var(--color-text-secondary); margin-bottom: var(--space-2); display: block;">契約ライセンス数</label>
+                  <input type="number" id="settings-licenses" required min="1" placeholder="例：8"
+                    style="background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border); width: 100%; box-sizing: border-box;">
+                </div>
+                <button type="submit" class="modal-submit-btn"
+                  style="margin-top: var(--space-2); width: 100%;">設定を保存</button>
+              </form>
+            </div>
+
+            <!-- ⚠ 管理者専用セクション -->
+            <div class="weekly-detail-card"
+              style="margin-top: var(--space-6); max-width: 500px; padding: var(--space-6); border-top: 2px solid #ef4444;">
+              <h3 style="color: #ef4444; margin-bottom: var(--space-3); font-size: var(--text-base); display: flex; align-items: center; gap: var(--space-2); font-weight: 600;">
+                <span>⚠</span> 管理者専用
+              </h3>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-4); line-height: 1.5;">
+                本番運用を開始する前に、これまで蓄積されたすべてのテストデータを削除します。この操作は取り消せません。
+              </p>
+              <button id="admin-clear-data-btn" class="modal-submit-btn"
+                style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); width: 100%; border: none;">テストデータを削除</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Initial Setup Modal ===== -->
+  <div class="modal-overlay" id="setup-modal" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <span class="modal-icon">📐</span>
+        <h2 class="modal-title">BIM Insight へようこそ</h2>
+        <p class="modal-subtitle">初期セットアップを行います。フルネームと所属を入力してください。</p>
+      </div>
+      <form id="setup-form" class="modal-form">
+        <div class="form-group">
+          <label for="setup-fullname">フルネーム</label>
+          <input type="text" id="setup-fullname" required placeholder="例：鈴木 一生">
+        </div>
+        <div class="form-group">
+          <label for="setup-department">所属</label>
+          <select id="setup-department" required>
+            <option value="" disabled selected>所属を選択してください</option>
+            <option value="本社BIM推進部">本社BIM推進部</option>
+            <option value="東京支店">東京支店</option>
+            <option value="大阪支店">大阪支店</option>
+            <option value="名古屋支店">名古屋支店</option>
+            <option value="北陸支店">北陸支店</option>
+            <option value="東北支店">東北支店</option>
+            <option value="九州支店">九州支店</option>
+          </select>
+        </div>
+        <button type="submit" class="modal-submit-btn">保存して開始</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data/dummy-data.js"></script>
+  <script src="js/api/data-service.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
