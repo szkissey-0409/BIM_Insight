@@ -19,7 +19,7 @@
           <div class="sidebar-logo-icon">📐</div>
           <div class="sidebar-logo-text">
             <span class="sidebar-logo-title">BIM Insight</span>
-            <span class="sidebar-logo-subtitle">Dashboard v2.0</span>
+            <span class="sidebar-logo-subtitle">Dashboard v2.1</span>
           </div>
         </div>
       </div>
@@ -232,6 +232,22 @@
             </div>
             <div class="weekly-detail-card"
               style="margin-top: var(--space-4); max-width: 500px; padding: var(--space-6);">
+              <!-- 管理者モード切り替え用UI -->
+              <div id="admin-mode-container" style="margin-bottom: var(--space-5); padding-bottom: var(--space-4); border-bottom: 1px solid var(--color-border);">
+                <button type="button" id="admin-mode-toggle-btn" class="modal-submit-btn" style="background: var(--color-accent-soft); color: var(--color-accent); border: 1px solid rgba(108, 140, 255, 0.2); width: 100%; margin-top: 0;">管理者モードを有効化</button>
+                <div id="admin-password-group" style="display: none; margin-top: var(--space-3);">
+                  <label for="admin-password" style="color: var(--color-text-secondary); margin-bottom: var(--space-2); display: block; font-size: var(--text-xs);">管理者パスワード</label>
+                  <div style="display: flex; gap: var(--space-2);">
+                    <input type="password" id="admin-password" placeholder="パスワードを入力" style="background: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border); flex: 1; box-sizing: border-box; padding: var(--space-2); height: 38px; border-radius: var(--radius-sm);">
+                    <button type="button" id="admin-password-submit-btn" class="modal-submit-btn" style="margin-top: 0; width: auto; padding: 0 var(--space-4); height: 38px;">認証</button>
+                  </div>
+                  <div id="admin-auth-error" style="color: #f87171; font-size: var(--text-xs); margin-top: var(--space-1); display: none;">パスワードが正しくありません。</div>
+                </div>
+                <div id="admin-active-badge" style="display: none; color: var(--color-success); font-size: var(--text-sm); font-weight: 600; display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-2);">
+                  <span>✓ 管理者モード有効中</span>
+                  <button type="button" id="admin-mode-logout-btn" style="background: none; border: none; color: var(--color-text-muted); cursor: pointer; font-size: var(--text-xs); text-decoration: underline; padding: 0;">無効化する</button>
+                </div>
+              </div>
               <form id="settings-form" class="modal-form"
                 style="background: transparent; border: none; padding: 0; box-shadow: none; width: 100%;">
                 <div class="form-group" style="margin-bottom: var(--space-4);">
@@ -255,7 +271,7 @@
                     <option value="九州支店">九州支店</option>
                   </select>
                 </div>
-                <div class="form-group" style="margin-bottom: var(--space-4);">
+                <div class="form-group" id="settings-licenses-group" style="margin-bottom: var(--space-4); display: none;">
                   <label for="settings-licenses"
                     style="color: var(--color-text-secondary); margin-bottom: var(--space-2); display: block;">契約ライセンス数</label>
                   <input type="number" id="settings-licenses" required min="1" placeholder="例：8"
@@ -267,8 +283,8 @@
             </div>
 
             <!-- ⚠ 管理者専用セクション -->
-            <div class="weekly-detail-card"
-              style="margin-top: var(--space-6); max-width: 500px; padding: var(--space-6); border-top: 2px solid #ef4444;">
+            <div class="weekly-detail-card" id="settings-admin-section"
+              style="margin-top: var(--space-6); max-width: 500px; padding: var(--space-6); border-top: 2px solid #ef4444; display: none;">
               <h3 style="color: #ef4444; margin-bottom: var(--space-3); font-size: var(--text-base); display: flex; align-items: center; gap: var(--space-2); font-weight: 600;">
                 <span>⚠</span> 管理者専用
               </h3>

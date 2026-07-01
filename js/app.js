@@ -483,6 +483,53 @@ function initNavigation() {
       }
     });
   }
+
+  // 管理者モードのイベント処理
+  const adminToggleBtn = document.getElementById('admin-mode-toggle-btn');
+  const adminPasswordGroup = document.getElementById('admin-password-group');
+  const adminPasswordInput = document.getElementById('admin-password');
+  const adminSubmitBtn = document.getElementById('admin-password-submit-btn');
+  const adminLogoutBtn = document.getElementById('admin-mode-logout-btn');
+  const adminAuthError = document.getElementById('admin-auth-error');
+
+  const handleAdminAuth = () => {
+    if (adminPasswordInput && adminPasswordInput.value === 'bim-admin-2026') {
+      sessionStorage.setItem('bim_insight_admin_mode', 'true');
+      updateAdminUI();
+    } else {
+      if (adminAuthError) adminAuthError.style.display = 'block';
+    }
+  };
+
+  if (adminToggleBtn) {
+    adminToggleBtn.addEventListener('click', () => {
+      if (adminPasswordGroup) {
+        adminPasswordGroup.style.display = 'block';
+        adminToggleBtn.style.display = 'none';
+        if (adminPasswordInput) adminPasswordInput.focus();
+      }
+    });
+  }
+
+  if (adminSubmitBtn) {
+    adminSubmitBtn.addEventListener('click', handleAdminAuth);
+  }
+
+  if (adminPasswordInput) {
+    adminPasswordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleAdminAuth();
+      }
+    });
+  }
+
+  if (adminLogoutBtn) {
+    adminLogoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('bim_insight_admin_mode');
+      updateAdminUI();
+    });
+  }
 }
 
 /**
@@ -515,12 +562,53 @@ async function renderMembersView() {
 
   const members = Object.values(memberMap);
 
+  const todayStr = dataService.getJstDateStr(new Date());
+
   const cards = members.map((member, i) => {
     const todayEntry = todayData.find(d => d.member.name === member.name);
     const minutes = todayEntry ? todayEntry.minutes : 0;
     
-    const statusText = minutes > 300 ? 'アクティブ' : minutes > 180 ? '利用中' : minutes > 0 ? '稼働終了' : '本日未稼働';
-    const statusClass = minutes > 0 ? 'active' : 'inactive';
+    // 今日のこのメンバーのログのみを抽出
+    const userTodayLogs = logs.filter(log => {
+      let userName = String(log.user_name || '').trim().replace(/[\s　]+/g, '');
+      if (userName === '一生' || userName === '') userName = '鈴木一生';
+      if (userName !== member.name) return false;
+
+      const timeSrc = log.created_at || log.start_time;
+      const parsedDate = dataService.safeParseDate(timeSrc);
+      return parsedDate && dataService.getJstDateStr(parsedDate) === todayStr;
+    });
+
+    // 最新の活動時刻を特定
+    let lastActiveTime = null;
+    userTodayLogs.forEach(log => {
+      const timeStr = log.created_at || log.end_time || log.start_time;
+      if (timeStr) {
+        const d = new Date(timeStr);
+        if (!isNaN(d.getTime())) {
+          if (!lastActiveTime || d.getTime() > lastActiveTime.getTime()) {
+            lastActiveTime = d;
+          }
+        }
+      }
+    });
+
+    const now = new Date();
+    // 最後の更新から10分以内 (10分 = 600,000 ミリ秒) かどうか
+    const isCurrentlyActive = lastActiveTime && (now.getTime() - lastActiveTime.getTime() < 10 * 60 * 1000);
+
+    let statusText = '⚫ 本日未稼働';
+    let statusClass = 'inactive';
+
+    if (userTodayLogs.length > 0) {
+      if (isCurrentlyActive) {
+        statusText = '🟢 稼働中';
+        statusClass = 'active';
+      } else {
+        statusText = '⚫ 稼働終了';
+        statusClass = 'ended';
+      }
+    }
     
     return `
       <div class="member-card animate-in delay-${(i % 8) + 1}">
@@ -701,5 +789,42 @@ function renderSettingsView() {
   if (licensesInput) {
     const savedLicenses = localStorage.getItem('bim_insight_licenses');
     licensesInput.value = savedLicenses ? parseInt(savedLicenses, 10) : 8;
+  }
+
+  // 管理者モードUIの同期
+  if (typeof updateAdminUI === 'function') {
+    updateAdminUI();
+  }
+}
+
+/**
+ * 管理者モード状態に基づいてUI要素を表示・非表示にする
+ */
+function updateAdminUI() {
+  const isAdmin = sessionStorage.getItem('bim_insight_admin_mode') === 'true';
+  
+  // 管理者専用コンテンツの制御
+  const licensesGroup = document.getElementById('settings-licenses-group');
+  const adminSection = document.getElementById('settings-admin-section');
+  if (licensesGroup) licensesGroup.style.display = isAdmin ? 'block' : 'none';
+  if (adminSection) adminSection.style.display = isAdmin ? 'block' : 'none';
+
+  // 管理者モード切り替えUIの制御
+  const adminToggleBtn = document.getElementById('admin-mode-toggle-btn');
+  const adminPasswordGroup = document.getElementById('admin-password-group');
+  const adminActiveBadge = document.getElementById('admin-active-badge');
+  const adminPasswordInput = document.getElementById('admin-password');
+  const adminAuthError = document.getElementById('admin-auth-error');
+
+  if (isAdmin) {
+    if (adminToggleBtn) adminToggleBtn.style.display = 'none';
+    if (adminPasswordGroup) adminPasswordGroup.style.display = 'none';
+    if (adminActiveBadge) adminActiveBadge.style.display = 'flex';
+  } else {
+    if (adminToggleBtn) adminToggleBtn.style.display = 'block';
+    if (adminPasswordGroup) adminPasswordGroup.style.display = 'none';
+    if (adminActiveBadge) adminActiveBadge.style.display = 'none';
+    if (adminPasswordInput) adminPasswordInput.value = '';
+    if (adminAuthError) adminAuthError.style.display = 'none';
   }
 }
