@@ -188,6 +188,9 @@ async function renderDashboard() {
   // 今日のメンバー別利用時間
   renderTodayMemberCards(todayData);
 
+  // Archicad バージョン別利用状況
+  renderVersionSection();
+
   // 下段：ランキング＆今週テーブル
   renderBottomSection(ranking, weeklyData);
 }
@@ -827,4 +830,81 @@ function updateAdminUI() {
     if (adminPasswordInput) adminPasswordInput.value = '';
     if (adminAuthError) adminAuthError.style.display = 'none';
   }
+}
+
+/**
+ * Archicadバージョン別利用状況（本日）を描画
+ */
+async function renderVersionSection() {
+  const container = document.getElementById('version-summary-grid');
+  if (!container) return;
+
+  const logs = await dataService.fetchLogs();
+  const todayStr = dataService.getJstDateStr(new Date());
+
+  // 今日のログを抽出
+  const todayLogs = logs.filter(log => {
+    const timeSrc = log.created_at || log.start_time;
+    const parsedDate = dataService.safeParseDate(timeSrc);
+    return parsedDate && dataService.getJstDateStr(parsedDate) === todayStr;
+  });
+
+  // バージョンごとに集計（利用時間、ユニークユーザー名）
+  const versionData = {
+    'Archicad 27': { minutes: 0, users: new Set() },
+    'Archicad 28': { minutes: 0, users: new Set() },
+    'Archicad 29': { minutes: 0, users: new Set() }
+  };
+
+  todayLogs.forEach(log => {
+    let version = log.archicad_version || 'Archicad (不明)';
+    if (version.toLowerCase().includes('notepad')) return;
+
+    let matchedKey = null;
+    if (version.includes('27')) matchedKey = 'Archicad 27';
+    else if (version.includes('28')) matchedKey = 'Archicad 28';
+    else if (version.includes('29')) matchedKey = 'Archicad 29';
+    else matchedKey = 'その他 Archicad';
+
+    if (!versionData[matchedKey]) {
+      versionData[matchedKey] = { minutes: 0, users: new Set() };
+    }
+
+    const durationMin = (log.duration_seconds || 0) / 60;
+    versionData[matchedKey].minutes += durationMin;
+    if (log.user_name) {
+      let userName = String(log.user_name).trim().replace(/[\s　]+/g, '');
+      if (userName === '一生' || userName === '') userName = '鈴木一生';
+      versionData[matchedKey].users.add(userName);
+    }
+  });
+
+  // HTMLカードの生成
+  const cardsHtml = Object.entries(versionData)
+    .filter(([key, data]) => data.minutes > 0 || data.users.size > 0 || ['Archicad 27', 'Archicad 28', 'Archicad 29'].includes(key))
+    .map(([version, data], index) => {
+      const hoursHtml = formatTimeDisplay(data.minutes);
+      const userCount = data.users.size;
+      
+      let themeClass = 'users';
+      if (version.includes('29')) themeClass = 'today';
+      else if (version.includes('28')) themeClass = 'week';
+      else if (version.includes('27')) themeClass = 'month';
+
+      return `
+        <div class="summary-card animate-in delay-${index + 1}" style="min-height: auto; padding: var(--space-5);">
+          <div class="summary-card-header" style="margin-bottom: var(--space-3);">
+            <div class="summary-card-icon ${themeClass}" style="width: 32px; height: 32px; font-size: 1rem;">📐</div>
+            <span style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 600;">本日</span>
+          </div>
+          <div class="summary-card-label" style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-1);">${version}</div>
+          <div class="summary-card-value" style="font-size: var(--text-lg); font-weight: 800; margin-bottom: var(--space-2);">${hoursHtml}</div>
+          <div class="summary-card-sub" style="font-size: var(--text-xs); display: flex; align-items: center; gap: var(--space-1);">
+            👤 利用人数: <strong style="color: var(--color-text-primary);">${userCount}人</strong>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  container.innerHTML = cardsHtml;
 }
