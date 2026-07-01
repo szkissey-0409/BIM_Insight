@@ -321,10 +321,10 @@ class DataService {
       }
     }
 
-    // 同一ユーザーかつ同一マシンごとにログをグループ化
+    // 同一ユーザーごとにログをグループ化（ユーザー単位でのライセンス集計に変更）
     const groups = {};
     todayLogs.forEach(log => {
-      const key = `${log.user}_${log.machine}`;
+      const key = log.user;
       if (!groups[key]) {
         groups[key] = [];
       }
