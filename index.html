@@ -19,7 +19,7 @@
           <div class="sidebar-logo-icon">📐</div>
           <div class="sidebar-logo-text">
             <span class="sidebar-logo-title">BIM Insight</span>
-            <span class="sidebar-logo-subtitle">Dashboard v2.3</span>
+            <span class="sidebar-logo-subtitle">Dashboard v2.4</span>
           </div>
         </div>
       </div>
@@ -306,6 +306,39 @@
               </p>
               <button id="admin-clear-data-btn" class="modal-submit-btn"
                 style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); width: 100%; border: none;">テストデータを削除</button>
+            </div>
+
+            <!-- 📐 診断情報セクション -->
+            <div class="weekly-detail-card" id="settings-diag-section"
+              style="margin-top: var(--space-6); max-width: 500px; padding: var(--space-6); border-top: 2px solid var(--color-accent);">
+              <h3 style="color: var(--color-accent); margin-bottom: var(--space-3); font-size: var(--text-base); display: flex; align-items: center; gap: var(--space-2); font-weight: 600;">
+                <span>📐</span> 診断情報
+              </h3>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-4); line-height: 1.5;">
+                エージェントから取得したローカルプロセスの動作・バージョン判定状況です。
+              </p>
+              <div style="font-size: var(--text-xs); display: flex; flex-direction: column; gap: var(--space-2); color: var(--color-text-secondary);">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">
+                  <span>取得した exePath：</span>
+                  <span id="diag-exepath" style="font-weight: 600; color: var(--color-text-primary); text-align: right; word-break: break-all; max-width: 250px;">未取得</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">
+                  <span>取得した ProductVersion：</span>
+                  <span id="diag-prodversion" style="font-weight: 600; color: var(--color-text-primary);">未取得</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">
+                  <span>ProcessName：</span>
+                  <span id="diag-procname" style="font-weight: 600; color: var(--color-text-primary);">未取得</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">
+                  <span>判定結果：</span>
+                  <span id="diag-result" style="font-weight: 600; color: var(--color-accent);">未取得</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding-bottom: var(--space-1);">
+                  <span>最終取得時刻：</span>
+                  <span id="diag-timestamp" style="font-weight: 600; color: var(--color-text-primary);">未取得</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

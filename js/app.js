@@ -416,7 +416,13 @@ function initNavigation() {
       navEl.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        // 1. active クラスの切り替え
+        // 診断情報の自動更新を解除
+        if (diagIntervalId) {
+          clearInterval(diagIntervalId);
+          diagIntervalId = null;
+        }
+
+        // 1. active クラス의切り替え
         Object.keys(navItems).forEach(id => {
           const el = document.getElementById(id);
           if (el) el.classList.remove('active');
@@ -798,6 +804,11 @@ function renderSettingsView() {
   if (typeof updateAdminUI === 'function') {
     updateAdminUI();
   }
+
+  // 診断情報の初期取得と定期実行
+  updateDiagnosticUI();
+  if (diagIntervalId) clearInterval(diagIntervalId);
+  diagIntervalId = setInterval(updateDiagnosticUI, 10000);
 }
 
 /**
@@ -907,4 +918,40 @@ async function renderVersionSection() {
     }).join('');
 
   container.innerHTML = cardsHtml;
+}
+
+// 診断情報の自動更新タイマーID
+let diagIntervalId = null;
+
+/**
+ * 診断情報をローカルエージェントから取得して表示
+ */
+async function updateDiagnosticUI() {
+  const exePathEl = document.getElementById('diag-exepath');
+  const prodVersionEl = document.getElementById('diag-prodversion');
+  const procNameEl = document.getElementById('diag-procname');
+  const resultEl = document.getElementById('diag-result');
+  const timestampEl = document.getElementById('diag-timestamp');
+
+  if (!exePathEl) return;
+
+  try {
+    const res = await fetch('http://localhost:32115/api/diagnostic');
+    if (res.ok) {
+      const data = await res.json();
+      exePathEl.textContent = data.exePath || '未検出';
+      prodVersionEl.textContent = data.productVersion || '未検出';
+      procNameEl.textContent = data.processName || '未検出';
+      resultEl.textContent = data.decisionResult || '未検出';
+      timestampEl.textContent = data.lastCheckedTime || '未取得';
+    } else {
+      throw new Error('Response not OK');
+    }
+  } catch (err) {
+    exePathEl.textContent = 'エージェント未起動、または接続エラー';
+    prodVersionEl.textContent = '---';
+    procNameEl.textContent = '---';
+    resultEl.textContent = '---';
+    timestampEl.textContent = '---';
+  }
 }
