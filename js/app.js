@@ -200,82 +200,38 @@ async function renderDashboard() {
  */
 function renderSummaryCards(todayData, weeklyData, monthlyData, metrics) {
   const totalToday = todayData.reduce((sum, d) => sum + d.minutes, 0);
-  const totalWeek = weeklyData.reduce((sum, d) => sum + d.totalMinutes, 0);
-  const totalMonth = monthlyData.reduce((sum, d) => sum + d.minutes, 0);
   const avgToday = todayData.length > 0 ? Math.round(totalToday / todayData.length) : 0;
 
-  const todayUsersCount = metrics ? metrics.todayActiveUsers : 7;
-  const maxLicenses = metrics ? metrics.maxSimultaneousLicenses : 4;
+  const todayUsersCount = metrics ? metrics.todayActiveUsers : 0;
+  const maxLicenses = metrics ? metrics.maxSimultaneousLicenses : 0;
+  const contractLicenses = metrics ? metrics.contractLicenses : 8;
 
   const container = document.getElementById('summary-grid');
+  if (!container) return;
+
   container.innerHTML = `
-    <div class="summary-card animate-in delay-1">
-      <div class="summary-card-header">
-        <div class="summary-card-icon today">⏱️</div>
-        <span class="summary-card-badge">+12%</span>
+    <div class="kpi-card blue-kpi animate-in delay-1">
+      <div class="kpi-icon-circle">🕒</div>
+      <div class="kpi-info">
+        <div class="kpi-value">${formatTimeDisplay(avgToday)}</div>
+        <div class="kpi-label">1人あたり平均</div>
       </div>
-      <div class="summary-card-label">今日のチーム合計</div>
-      <div class="summary-card-value">
-        ${formatTimeDisplay(totalToday)}
-      </div>
-      <div class="summary-card-sub">8メンバーの合計利用時間</div>
     </div>
 
-    <div class="summary-card animate-in delay-2">
-      <div class="summary-card-header">
-        <div class="summary-card-icon week">📊</div>
-        <span class="summary-card-badge">+8%</span>
+    <div class="kpi-card green-kpi animate-in delay-2">
+      <div class="kpi-icon-circle">👥</div>
+      <div class="kpi-info">
+        <div class="kpi-value">${todayUsersCount}<span class="unit">人</span></div>
+        <div class="kpi-label">アクティブなメンバー数</div>
       </div>
-      <div class="summary-card-label">今週のチーム合計</div>
-      <div class="summary-card-value">
-        ${formatTimeDisplay(totalWeek)}
-      </div>
-      <div class="summary-card-sub">月〜金の累計</div>
     </div>
 
-    <div class="summary-card animate-in delay-3">
-      <div class="summary-card-header">
-        <div class="summary-card-icon month">📅</div>
-        <span class="summary-card-badge">+5%</span>
+    <div class="kpi-card orange-kpi animate-in delay-3">
+      <div class="kpi-icon-circle">🔑</div>
+      <div class="kpi-info">
+        <div class="kpi-value">${maxLicenses}<span class="unit">ライセンス</span></div>
+        <div class="kpi-label">契約ライセンス数: ${contractLicenses}</div>
       </div>
-      <div class="summary-card-label">今月のチーム合計</div>
-      <div class="summary-card-value">
-        ${formatTimeDisplay(totalMonth)}
-      </div>
-      <div class="summary-card-sub">${getDateInfo().month}月の累計</div>
-    </div>
-
-    <div class="summary-card animate-in delay-4">
-      <div class="summary-card-header">
-        <div class="summary-card-icon avg">👤</div>
-      </div>
-      <div class="summary-card-label">今日の平均利用時間</div>
-      <div class="summary-card-value">
-        ${formatTimeDisplay(avgToday)}
-      </div>
-      <div class="summary-card-sub">1人あたり平均</div>
-    </div>
-
-    <div class="summary-card animate-in delay-5">
-      <div class="summary-card-header">
-        <div class="summary-card-icon users">👥</div>
-      </div>
-      <div class="summary-card-label">今日の利用人数</div>
-      <div class="summary-card-value">
-        ${todayUsersCount}<span class="unit">人</span>
-      </div>
-      <div class="summary-card-sub">アクティブなメンバー数</div>
-    </div>
-
-    <div class="summary-card animate-in delay-6">
-      <div class="summary-card-header">
-        <div class="summary-card-icon licenses">🔑</div>
-      </div>
-      <div class="summary-card-label">本日の最大同時利用ライセンス数</div>
-      <div class="summary-card-value">
-        ${maxLicenses}<span class="unit">ライセンス</span>
-      </div>
-      <div class="summary-card-sub">契約ライセンス数: ${metrics ? metrics.contractLicenses : 8}</div>
     </div>
   `;
 }
@@ -284,16 +240,22 @@ function renderSummaryCards(todayData, weeklyData, monthlyData, metrics) {
  * 今日のメンバー別カードを描画
  */
 function renderTodayMemberCards(todayData) {
-  const maxMinutes = Math.max(...todayData.map(d => d.minutes));
+  const maxMinutes = Math.max(...todayData.map(d => d.minutes), 1);
   const container = document.getElementById('today-member-grid');
+  if (!container) return;
 
   const cards = todayData.map((data, i) => {
     const progressPercent = Math.round((data.minutes / maxMinutes) * 100);
     const statusText = data.minutes > 300 ? 'アクティブ' : data.minutes > 180 ? '利用中' : '少なめ';
+    const isIssey = data.member.name.includes("一生");
+    const themeClass = isIssey ? "blue-theme" : "purple-theme";
+    const initialLetter = data.member.name.substring(0, 1);
+
     return `
-      <div class="member-card animate-in delay-${i + 1}">
-        <div class="member-card-top">
-          <div>
+      <div class="member-card-item ${themeClass} animate-in delay-${i + 1}">
+        <div class="member-card-top" style="margin-bottom: 0;">
+          <div class="member-avatar-circle">${initialLetter}</div>
+          <div class="member-meta">
             <div class="member-name">${data.member.name}</div>
             <div class="member-status">${statusText}</div>
           </div>
@@ -897,21 +859,38 @@ async function renderVersionSection() {
       const hoursHtml = formatTimeDisplay(data.minutes);
       const userCount = data.users.size;
       
-      let themeClass = 'users';
-      if (version.includes('29')) themeClass = 'today';
-      else if (version.includes('28')) themeClass = 'week';
-      else if (version.includes('27')) themeClass = 'month';
+      let themeClass = 'vother';
+      let badgeLabel = 'その他';
+      let badgeSub = 'AC';
+      if (version.includes('29')) {
+        themeClass = 'v29';
+        badgeLabel = '29';
+        badgeSub = 'AC';
+      } else if (version.includes('28')) {
+        themeClass = 'v28';
+        badgeLabel = '28';
+        badgeSub = 'AC';
+      } else if (version.includes('27')) {
+        themeClass = 'v27';
+        badgeLabel = '27';
+        badgeSub = 'AC';
+      }
 
       return `
-        <div class="summary-card animate-in delay-${index + 1}" style="min-height: auto; padding: var(--space-5);">
-          <div class="summary-card-header" style="margin-bottom: var(--space-3);">
-            <div class="summary-card-icon ${themeClass}" style="width: 32px; height: 32px; font-size: 1rem;">📐</div>
-            <span style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 600;">本日</span>
+        <div class="version-card ${themeClass} animate-in delay-${index + 1}">
+          <div class="version-card-main">
+            <div class="version-badge">
+              <span class="version-badge-sub">${badgeSub}</span>
+              <span class="version-badge-main">${badgeLabel}</span>
+            </div>
+            <div class="version-meta">
+              <div class="version-name">${version}</div>
+              <div class="version-time">${hoursHtml}</div>
+            </div>
+            <div class="version-card-today-badge">本日</div>
           </div>
-          <div class="summary-card-label" style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-1);">${version}</div>
-          <div class="summary-card-value" style="font-size: var(--text-lg); font-weight: 800; margin-bottom: var(--space-2);">${hoursHtml}</div>
-          <div class="summary-card-sub" style="font-size: var(--text-xs); display: flex; align-items: center; gap: var(--space-1);">
-            👤 利用人数: <strong style="color: var(--color-text-primary);">${userCount}人</strong>
+          <div class="version-card-footer">
+            <span class="icon">👤</span> 利用人数: <strong>${userCount}人</strong>
           </div>
         </div>
       `;
