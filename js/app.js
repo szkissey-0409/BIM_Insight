@@ -268,7 +268,7 @@ function renderSummaryCards(todayData, weeklyData, monthlyData, metrics) {
       <div class="summary-card-header">
         <div class="summary-card-icon licenses">🔑</div>
       </div>
-      <div class="summary-card-label">最大同時利用ライセンス数</div>
+      <div class="summary-card-label">本日の最大同時利用ライセンス数</div>
       <div class="summary-card-value">
         ${maxLicenses}<span class="unit">ライセンス</span>
       </div>
